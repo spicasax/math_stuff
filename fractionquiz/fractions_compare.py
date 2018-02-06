@@ -4,6 +4,7 @@
 
 import tkinter as tk
 from tkinter import ttk
+import tkinter.messagebox as msgbox
 
 from fractions import Fraction
 
@@ -96,7 +97,7 @@ class CheckPage(tk.Frame):
         self.controller = controller
 
         tk.Frame.__init__(self, parent)
-        self.label = ttk.Label(self, text="Page One", font=LARGE_FONT)
+        self.label = tk.Label(self, text="Page One", font=LARGE_FONT)
         self.label.pack(pady=10, padx=10)
 
         button1 = ttk.Button(self, text="Back to Home",
@@ -104,10 +105,25 @@ class CheckPage(tk.Frame):
         button1.pack()
 
     def correct_label(self):
-        _num1 = int(self.controller.numerator1)
-        _den1 = int(self.controller.denominator1)
-        _num2 = int(self.controller.numerator2)
-        _den2 = int(self.controller.denominator2)
+        # check we have numbers
+        try:
+            _num1 = int(self.controller.numerator1)
+            _den1 = int(self.controller.denominator1)
+            _num2 = int(self.controller.numerator2)
+            _den2 = int(self.controller.denominator2)
+        except:
+            msgbox.showinfo("Error", "Please enter numbers only.")
+            answer = "Incorrect"
+            self.label.config(text=answer)
+            return
+
+        # check we don't divide by zero
+        if (_den1 == 0) | (_den2 == 0):
+            msgbox.showinfo("Error", "Do not divide by zero.")
+            answer = "Incorrect"
+            self.label.config(text=answer)
+            return
+
         _compare = self.controller.compare
 
         if _compare == '>':
@@ -124,6 +140,6 @@ class CheckPage(tk.Frame):
         self.label.config(text=answer)
         return
 
-
-app = FractionCompareApp()
-app.mainloop()
+if __name__ == "__main__":
+    app = FractionCompareApp()
+    app.mainloop()
